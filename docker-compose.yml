@@ -1,0 +1,33 @@
+version: "3.8"
+
+volumes:
+    postgres_vol:
+
+services: 
+    postgres:
+        image: postgres
+        ports:
+            - 5432:5432
+        volumes:
+            - postgres_vol:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=postgres
+            - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+
+    fastapi:
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        ports:
+            - 8000:8000
+        volumes:
+            - ./:/fastapi-apple
+        command:
+            - /bin/bash
+            - -c
+            - |
+                cd /fastapi-apple/src
+                uvicorn main:app --reload
+        
